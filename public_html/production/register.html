@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrarse - DevTracker</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .background-radial-gradient {
+      background-color: #9a616d;
+      background-image: radial-gradient(650px circle at 0% 0%,
+          #9a616d 15%,
+          #815de6 35%,
+          #815de6 75%,
+          #815de6 80%,
+          transparent 100%),
+        radial-gradient(1250px circle at 100% 100%,
+          #9a616d 15%,
+          #815de6 35%,
+          #815de6 75%,
+          #815de6 80%,
+          transparent 100%);
+    }
+
+    .bg-glass {
+      background-color: hsla(0, 0%, 100%, 0.9) !important;
+      backdrop-filter: saturate(200%) blur(25px);
+    }
+
+    .card {
+      background-color: hsl(0, 0%, 100%) !important;
+      backdrop-filter: saturate(200%) blur(25px);
+      border-radius: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="background-radial-gradient overflow-hidden vh-100 d-flex align-items-center justify-content-center">
+    <div class="card bg-glass" style="width: 400px">
+      <div class="card-body px-4 py-5">
+        <h5 class="card-title text-center mb-4">Crea una cuenta nueva</h5>
+        <form id="registerForm">
+          <!-- 2 column grid layout with text inputs for the first and last names -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div data-mdb-input-init class="form-outline">
+                <input type="text" id="firstName" class="form-control" />
+                <label class="form-label" for="firstName">Nombre</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div data-mdb-input-init class="form-outline">
+                <input type="text" id="lastName" class="form-control" />
+                <label class="form-label" for="lastName">Apellido</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email input -->
+          <div data-mdb-input-init class="form-outline mb-4">
+            <input type="email" id="email_reg" class="form-control" />
+            <label class="form-label" for="email_reg">Correo Electrónico</label>
+          </div>
+
+          <!-- Password input -->
+          <div data-mdb-input-init class="form-outline mb-4">
+            <input type="password" id="password_reg" class="form-control" />
+            <label class="form-label" for="password_reg">Contraseña</label>
+          </div>
+
+          <!-- Select de empresa -->
+          <div class="form-outline mb-4">
+            <select class="form-select" aria-label="Default select example" id="company">
+              <option disabled selected>Selecciona tu empresa</option>
+            </select>
+          </div>
+
+          <!-- Submit button -->
+          <div class="text-center">
+            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">
+              Registrarse
+            </button>
+          </div>
+
+          <!-- Botón para iniciar sesión -->
+          <div class="text-center">
+            <p>
+              ¿Ya tienes una cuenta?
+              <a href="login.html" class="btn btn-link">Inicia Sesión</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enlace a Bootstrap JS y dependencias -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+  <!-- Enlace a tus scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $.ajax({
+        type: "POST",
+        url: "../ajax/login_ajax.php",
+        data: { type: "Consulta_empresa" },
+        dataType: "json",
+        success: function (response) {
+          response.forEach(function (empresa) {
+            $("#company").append(
+              $("<option>", {
+                value: empresa.id_empresa,
+                text: empresa.nom_empresa,
+              })
+            );
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error(error);
+        },
+      });
+
+      $("#registerForm").submit(function (e) {
+        e.preventDefault();
+        var nombre = $("#firstName").val();
+        var type = "registrar_usuario"; 
+        var apellido = $("#lastName").val();
+        var email = $("#email_reg").val();
+        var password = $("#password_reg").val();
+        var company = $("#company").val();
+        $.ajax({
+          type: "POST",
+          url: "../ajax/login_ajax.php",
+          data: {
+            type: type,
+            nombre: nombre,
+            apellido: apellido,
+            email: email,
+            company: company,
+            password: password,
+          },
+          success: function (response) {
+            console.log(response);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+          },
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
